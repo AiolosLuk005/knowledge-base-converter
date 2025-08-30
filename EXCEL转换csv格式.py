@@ -49,6 +49,7 @@ def process_excel_file(file_path):
     base_name = os.path.splitext(os.path.basename(file_path))[0]
     output_dir = os.path.dirname(file_path)
     exported_files = []
+    md_lines = []
 
     for i, sheetname in enumerate(wb.sheetnames):
         sheet = wb[sheetname]
@@ -57,6 +58,22 @@ def process_excel_file(file_path):
         output_file = os.path.join(output_dir, f"{base_name}_Sheet{i+1}.csv")
         df.to_csv(output_file, index=False, header=False, encoding='utf-8-sig')
         exported_files.append(output_file)
+
+        # 添加markdown内容
+        md_lines.append(f"### Sheet{i+1}: {sheetname}")
+        if formatted_data:
+            headers = [str(h) for h in formatted_data[0]]
+            md_lines.append("| " + " | ".join(headers) + " |")
+            md_lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
+            for row in formatted_data[1:]:
+                md_lines.append("| " + " | ".join(str(cell) for cell in row) + " |")
+        md_lines.append("")
+
+    # 写入markdown文件
+    md_file = os.path.join(output_dir, f"{base_name}.md")
+    with open(md_file, "w", encoding="utf-8") as f:
+        f.write("\n".join(md_lines))
+    exported_files.append(md_file)
 
     return exported_files
 
