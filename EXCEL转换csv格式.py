@@ -59,10 +59,19 @@ def process_excel_file(file_path):
         df.to_csv(output_file, index=False, header=False, encoding='utf-8-sig')
         exported_files.append(output_file)
 
-        # 添加markdown内容
-        md_lines.append(f"### Sheet{i+1}: {sheetname}")
+        safe_sheetname = "".join(c if c not in r'\\/:"*?<>|' else "_" for c in sheetname)
         if formatted_data:
             headers = [str(h) for h in formatted_data[0]]
+            json_df = pd.DataFrame(formatted_data[1:], columns=headers)
+        else:
+            headers = []
+            json_df = pd.DataFrame()
+        json_file = os.path.join(output_dir, f"{base_name}_{safe_sheetname}.json")
+        json_df.to_json(json_file, orient="records", force_ascii=False)
+        exported_files.append(json_file)
+
+        md_lines.append(f"### Sheet{i+1}: {sheetname}")
+        if formatted_data:
             md_lines.append("| " + " | ".join(headers) + " |")
             md_lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
             for row in formatted_data[1:]:
