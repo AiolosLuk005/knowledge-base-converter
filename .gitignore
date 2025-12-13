@@ -1,0 +1,9 @@
+/data/
+/venv/
+config.ini
+password.txt
+*.log
+*.temp
+backup*
+test_output.csv
+temp_data/
