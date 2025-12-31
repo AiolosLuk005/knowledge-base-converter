@@ -6,4 +6,4 @@ password.txt
 *.temp
 backup*
 test_output.csv
-temp_data/
+temp_data/converters/__pycache__/ 

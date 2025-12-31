@@ -6,6 +6,28 @@ from openpyxl.styles.numbers import is_date_format
 from datetime import datetime
 from tkinter import Tk, filedialog, messagebox
 
+def normalize_headers(headers):
+    """
+    处理重复 / 空列名，确保 JSON 可用
+    """
+    seen = {}
+    new_headers = []
+
+    for i, h in enumerate(headers):
+        h = str(h).strip()
+        if not h:
+            h = f"列{i+1}"
+
+        if h in seen:
+            seen[h] += 1
+            h = f"{h}_{seen[h]}"
+        else:
+            seen[h] = 1
+
+        new_headers.append(h)
+
+    return new_headers
+
 def format_cell(cell):
     if cell.value is None:
         return ""
@@ -61,7 +83,8 @@ def process_excel_file(file_path):
 
         safe_sheetname = "".join(c if c not in r'\\/:"*?<>|' else "_" for c in sheetname)
         if formatted_data:
-            headers = [str(h) for h in formatted_data[0]]
+            raw_headers = [str(h) for h in formatted_data[0]]
+            headers = normalize_headers(raw_headers)
             json_df = pd.DataFrame(formatted_data[1:], columns=headers)
         else:
             headers = []
