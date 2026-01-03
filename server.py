@@ -89,7 +89,28 @@ def convert_file(convert_type):
 def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('web', 'favicon.ico', mimetype='image/x-icon')
+
 if __name__ == '__main__':
+    # 通过环境变量控制 debug 模式，默认为关闭（生产模式）
+    # 开发时可设置: set FLASK_DEBUG=1 (Windows) 或 export FLASK_DEBUG=1 (Linux/Mac)
+    debug_mode = os.environ.get('FLASK_DEBUG', '0').lower() in ('1', 'true', 'yes')
+    
     print("Starting Knowledge Base Converter Server...")
+    print(f"Debug mode: {'ON' if debug_mode else 'OFF'}")
     print("Open http://localhost:5000 in your browser")
-    app.run(debug=True, port=5000)
+    
+    if debug_mode:
+        print("TIP: To disable debug mode, unset FLASK_DEBUG environment variable")
+        app.run(debug=True, port=5000)
+    else:
+        # 生产模式：使用 Waitress 服务器（如果已安装），否则使用 Flask 内置服务器
+        try:
+            from waitress import serve
+            print("Using Waitress production server")
+            serve(app, host='127.0.0.1', port=5000)
+        except ImportError:
+            print("TIP: Install 'waitress' for better production performance: pip install waitress")
+            app.run(debug=False, port=5000)
