@@ -10,6 +10,8 @@ from converters.excel_converter import process_excel_file
 from converters.pdf_converter import process_pdf_full
 from converters.word_converter import extract_from_docx
 from converters.doc_converter import convert_doc_to_docx
+from converters.word_to_md_converter import extract_from_docx as word_to_md_extract
+from converters.docx_merger_converter import process_merge_docx
 
 app = Flask(__name__, static_folder='web', static_url_path='')
 
@@ -46,39 +48,69 @@ def convert_file(convert_type):
     result_files = []
     
     try:
-        for file in files:
-            if file.filename == '':
-                continue
-                
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(batch_dir, filename)
-            file.save(file_path)
+        # 特殊处理：merge-docx需要合并所有文件
+        if convert_type == 'merge-docx':
+            file_paths = []
+            for file in files:
+                if file.filename == '':
+                    continue
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(batch_dir, filename)
+                file.save(file_path)
+                file_paths.append(file_path)
             
-            generated_paths = []
+            if len(file_paths) < 2:
+                return jsonify({'error': '至少需要两个文件才能进行合并'}), 400
             
             try:
-                if convert_type == 'excel':
-                    generated_paths = process_excel_file(file_path)
-                elif convert_type == 'pdf':
-                    generated_paths = process_pdf_full(file_path)
-                elif convert_type == 'word':
-                    generated_paths = extract_from_docx(file_path)
-                elif convert_type == 'doc2docx':
-                    generated_paths = convert_doc_to_docx(file_path)
-                else:
-                    return jsonify({'error': 'Invalid conversion type'}), 400
+                generated_paths = process_merge_docx(file_paths)
+                for path in generated_paths:
+                    rel_path = os.path.relpath(path, app.config['UPLOAD_FOLDER'])
+                    rel_path = rel_path.replace('\\\\', '/')
+                    result_files.append({
+                        'name': os.path.basename(path),
+                        'url': f'/download/{rel_path}'
+                    })
             except Exception as e:
-                return jsonify({'error': f"Error converting {filename}: {str(e)}"}), 500
+                return jsonify({'error': f"Error merging files: {str(e)}"}), 500
+        
+        # 常规处理：每个文件单独转换
+        else:
+            for file in files:
+                if file.filename == '':
+                    continue
+                    
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(batch_dir, filename)
+                file.save(file_path)
+                
+                generated_paths = []
+                
+                try:
+                    if convert_type == 'excel':
+                        generated_paths = process_excel_file(file_path)
+                    elif convert_type == 'pdf':
+                        generated_paths = process_pdf_full(file_path)
+                    elif convert_type == 'word':
+                        generated_paths = extract_from_docx(file_path)
+                    elif convert_type == 'doc2docx':
+                        generated_paths = convert_doc_to_docx(file_path)
+                    elif convert_type == 'word-to-md':
+                        generated_paths = word_to_md_extract(file_path)
+                    else:
+                        return jsonify({'error': 'Invalid conversion type'}), 400
+                except Exception as e:
+                    return jsonify({'error': f"Error converting {filename}: {str(e)}"}), 500
 
-            # Collect results
-            for path in generated_paths:
-                rel_path = os.path.relpath(path, app.config['UPLOAD_FOLDER'])
-                # Windows path separators fix for URL
-                rel_path = rel_path.replace('\\', '/')
-                result_files.append({
-                    'name': os.path.basename(path),
-                    'url': f'/download/{rel_path}'
-                })
+                # Collect results
+                for path in generated_paths:
+                    rel_path = os.path.relpath(path, app.config['UPLOAD_FOLDER'])
+                    # Windows path separators fix for URL
+                    rel_path = rel_path.replace('\\\\', '/')
+                    result_files.append({
+                        'name': os.path.basename(path),
+                        'url': f'/download/{rel_path}'
+                    })
 
         return jsonify({'files': result_files})
         

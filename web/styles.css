@@ -126,6 +126,8 @@ body {
 .pdf-icon { background-color: #F40F02; }   /* PDF Red */
 .word-icon { background-color: #2B579A; }  /* Word Blue */
 .doc-icon { background-color: #4285F4; }   /* Google Blue */
+.markdown-icon { background-color: #00BCD4; } /* Teal/Cyan */
+.merge-icon { background-color: #9C27B0; }  /* Purple */
 
 .card-icon span {
     font-size: 28px;

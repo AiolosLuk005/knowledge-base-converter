@@ -19,25 +19,29 @@ function selectTool(type) {
         'excel': 'Excel 转换',
         'pdf': 'PDF 转换',
         'word': 'Word 转换',
-        'doc2docx': 'Doc 转 Docx'
+        'doc2docx': 'Doc 转 Docx',
+        'word-to-md': 'Word 转 Markdown',
+        'merge-docx': '多文档合并'
     };
-    
+
     // Update UI
     toolTitle.textContent = titles[type] || '上传文件';
-    
+
     // Accept types
     let accept = '';
-    if(type === 'excel') accept = '.xlsx, .xlsm';
-    else if(type === 'pdf') accept = '.pdf';
-    else if(type === 'word') accept = '.docx';
-    else if(type === 'doc2docx') accept = '.doc';
-    
+    if (type === 'excel') accept = '.xlsx, .xlsm';
+    else if (type === 'pdf') accept = '.pdf';
+    else if (type === 'word') accept = '.docx';
+    else if (type === 'doc2docx') accept = '.doc';
+    else if (type === 'word-to-md') accept = '.docx';
+    else if (type === 'merge-docx') accept = '.docx';
+
     fileInput.accept = accept;
-    
+
     // Switch views
     toolsGrid.classList.add('hidden');
     uploadSection.classList.remove('hidden');
-    
+
     // Clear previous files
     selectedFiles = [];
     renderFileList();
@@ -75,12 +79,14 @@ dropZone.addEventListener('drop', (e) => {
 
 function handleFiles(files) {
     if (!currentTool) return;
-    
+
     const validExtensions = {
         'excel': ['.xlsx', '.xlsm'],
         'pdf': ['.pdf'],
         'word': ['.docx'],
-        'doc2docx': ['.doc']
+        'doc2docx': ['.doc'],
+        'word-to-md': ['.docx'],
+        'merge-docx': ['.docx']
     };
 
     const allowed = validExtensions[currentTool];
@@ -113,7 +119,7 @@ function renderFileList() {
         `;
         fileList.appendChild(item);
     });
-    
+
     convertBtn.disabled = selectedFiles.length === 0;
 }
 
@@ -136,21 +142,21 @@ async function startConversion() {
 
     convertBtn.disabled = true;
     convertBtn.textContent = '处理中...';
-    
+
     const formData = new FormData();
     selectedFiles.forEach(file => {
         formData.append('files', file);
     });
-    
+
     try {
         const endpoint = `/api/convert/${currentTool}`;
         const response = await fetch(endpoint, {
             method: 'POST',
             body: formData
         });
-        
+
         const result = await response.json();
-        
+
         if (response.ok) {
             showResult(result);
         } else {
@@ -166,7 +172,7 @@ async function startConversion() {
 
 function showResult(result) {
     downloadLinks.innerHTML = '';
-    
+
     if (result.files && result.files.length > 0) {
         result.files.forEach(file => {
             const link = document.createElement('a');
@@ -179,7 +185,7 @@ function showResult(result) {
     } else {
         downloadLinks.innerHTML = '<p>没有生成输出文件</p>';
     }
-    
+
     modal.classList.remove('hidden');
 }
 
