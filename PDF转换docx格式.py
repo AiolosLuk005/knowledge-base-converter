@@ -2,11 +2,11 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-import fitz
-from docx import Document
+from pdf2docx import Converter
 
 
 def select_path():
+    """选择文件或文件夹路径"""
     root = tk.Tk()
     root.withdraw()
     choice = messagebox.askyesno("选择方式", "是否处理整个文件夹？\n是 = 文件夹，否 = 单个文件")
@@ -17,53 +17,68 @@ def select_path():
     return "file", file_path if file_path else None
 
 
-def extract_text_from_pdf(pdf_path):
-    pdf_document = fitz.open(pdf_path)
-    pages_text = []
-    for page in pdf_document:
-        page_text = page.get_text("text").strip()
-        pages_text.append(page_text)
-    pdf_document.close()
-    return pages_text
-
-
 def convert_pdf_to_docx(pdf_path):
-    pages_text = extract_text_from_pdf(pdf_path)
-    doc = Document()
-    for page_index, page_text in enumerate(pages_text):
-        if page_text:
-            for line in page_text.splitlines():
-                clean_line = line.strip()
-                if clean_line:
-                    doc.add_paragraph(clean_line)
-        else:
-            doc.add_paragraph("")
-        if page_index < len(pages_text) - 1:
-            doc.add_page_break()
-
-    docx_path = os.path.splitext(pdf_path)[0] + ".docx"
-    doc.save(docx_path)
-
-    print(f"✅ 已处理：{os.path.basename(pdf_path)}")
-    print(f"   ➤ DOCX 输出：{docx_path}")
+    """
+    将PDF转换为DOCX，保留图片、表格和格式
+    使用pdf2docx库进行转换，可以保留：
+    - 文本格式（字体、大小、颜色等）
+    - 图片和图形
+    - 表格（结构和内容）
+    - 页面布局
+    """
+    try:
+        docx_path = os.path.splitext(pdf_path)[0] + ".docx"
+        
+        # 创建转换器
+        cv = Converter(pdf_path)
+        
+        # 转换PDF到DOCX
+        # start: 起始页（默认0）
+        # end: 结束页（默认None，表示所有页）
+        cv.convert(docx_path, start=0, end=None)
+        
+        # 关闭转换器
+        cv.close()
+        
+        print(f"✅ 已处理：{os.path.basename(pdf_path)}")
+        print(f"   ➤ DOCX 输出：{docx_path}")
+        
+    except Exception as e:
+        print(f"❌ 转换失败：{os.path.basename(pdf_path)}")
+        print(f"   ➤ 错误信息：{str(e)}")
 
 
 def main():
+    """主函数"""
+    print("=" * 60)
+    print("PDF 转 DOCX 工具（保留图片、表格和格式）")
+    print("=" * 60)
+    
     mode, path = select_path()
     if not path:
         print("❌ 未选择路径。")
         return
 
     if mode == "file":
+        print(f"\n📄 处理单个文件...")
         convert_pdf_to_docx(path)
     elif mode == "folder":
+        print(f"\n📁 处理文件夹：{path}")
         files = [f for f in os.listdir(path) if f.lower().endswith(".pdf")]
         if not files:
             print("❌ 文件夹中无 .pdf 文件。")
             return
-        for file in files:
+        
+        print(f"找到 {len(files)} 个 PDF 文件\n")
+        for index, file in enumerate(files, 1):
+            print(f"[{index}/{len(files)}] 处理中...")
             full_path = os.path.join(path, file)
             convert_pdf_to_docx(full_path)
+            print()
+    
+    print("=" * 60)
+    print("✨ 转换完成！")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
