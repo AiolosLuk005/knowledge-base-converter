@@ -1,13 +1,14 @@
 :root {
-    --primary-color: #01875F; /* Google Play Green */
+    --primary-color: #01875F;
+    /* Google Play Green */
     --primary-hover: #016f4e;
     --background-color: #F8F9FA;
     --surface-color: #FFFFFF;
     --text-primary: #202124;
     --text-secondary: #5F6368;
     --border-color: #DADCE0;
-    --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-    --shadow-md: 0 4px 6px rgba(60,64,67,0.3);
+    --shadow-sm: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    --shadow-md: 0 4px 6px rgba(60, 64, 67, 0.3);
     --radius-md: 8px;
     --radius-lg: 12px;
     --transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -91,7 +92,7 @@ body {
     background: var(--surface-color);
     border-radius: var(--radius-lg);
     padding: 24px;
-    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
     cursor: pointer;
     transition: var(--transition);
     display: flex;
@@ -102,9 +103,9 @@ body {
 }
 
 .tool-card:hover {
-    box-shadow: 0 4px 8px 3px rgba(60,64,67,0.15), 0 1px 3px rgba(60,64,67,0.3);
+    box-shadow: 0 4px 8px 3px rgba(60, 64, 67, 0.15), 0 1px 3px rgba(60, 64, 67, 0.3);
     transform: translateY(-2px);
-    border-color: rgba(0,0,0,0.05);
+    border-color: rgba(0, 0, 0, 0.05);
 }
 
 .tool-card:active {
@@ -122,12 +123,36 @@ body {
     color: white;
 }
 
-.excel-icon { background-color: #1D6F42; } /* Excel Green */
-.pdf-icon { background-color: #F40F02; }   /* PDF Red */
-.word-icon { background-color: #2B579A; }  /* Word Blue */
-.doc-icon { background-color: #4285F4; }   /* Google Blue */
-.markdown-icon { background-color: #00BCD4; } /* Teal/Cyan */
-.merge-icon { background-color: #9C27B0; }  /* Purple */
+.excel-icon {
+    background-color: #1D6F42;
+}
+
+/* Excel Green */
+.pdf-icon {
+    background-color: #F40F02;
+}
+
+/* PDF Red */
+.word-icon {
+    background-color: #2B579A;
+}
+
+/* Word Blue */
+.doc-icon {
+    background-color: #4285F4;
+}
+
+/* Google Blue */
+.markdown-icon {
+    background-color: #00BCD4;
+}
+
+/* Teal/Cyan */
+.merge-icon {
+    background-color: #9C27B0;
+}
+
+/* Purple */
 
 .card-icon span {
     font-size: 28px;
@@ -173,8 +198,15 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .upload-header {
@@ -198,7 +230,7 @@ body {
 }
 
 .back-btn:hover {
-    background-color: rgba(0,0,0,0.04);
+    background-color: rgba(0, 0, 0, 0.04);
 }
 
 .upload-header h3 {
@@ -216,9 +248,11 @@ body {
     background-color: #FAFAFA;
 }
 
-.upload-area:hover, .upload-area.dragover {
+.upload-area:hover,
+.upload-area.dragover {
     border-color: var(--primary-color);
-    background-color: #F1F8E9; /* Light Green Tint */
+    background-color: #F1F8E9;
+    /* Light Green Tint */
 }
 
 .upload-icon {
@@ -282,7 +316,8 @@ body {
 }
 
 .remove-file:hover {
-    color: #D93025; /* Google Red */
+    color: #D93025;
+    /* Google Red */
 }
 
 .action-bar {
@@ -300,13 +335,13 @@ body {
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3);
     transition: background 0.2s, box-shadow 0.2s;
 }
 
 .primary-btn:hover {
     background-color: var(--primary-hover);
-    box-shadow: 0 2px 4px rgba(60,64,67,0.3);
+    box-shadow: 0 2px 4px rgba(60, 64, 67, 0.3);
 }
 
 .primary-btn:disabled {
@@ -322,7 +357,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -333,9 +368,15 @@ body {
     background: var(--surface-color);
     border-radius: var(--radius-lg);
     width: 90%;
-    max-width: 400px;
+    max-width: 500px;
+    /* 增加最大宽度以容纳更多内容 */
+    max-height: 90vh;
+    /* 限制最大高度为视口高度的90% */
     box-shadow: var(--shadow-md);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    /* 使用 flex 布局以便正确处理滚动 */
 }
 
 .modal-header {
@@ -360,6 +401,10 @@ body {
 .modal-body {
     padding: 32px 24px;
     text-align: center;
+    overflow-y: auto;
+    /* 允许垂直滚动 */
+    flex: 1;
+    /* 允许主体区域占据剩余空间 */
 }
 
 .success-animation {
@@ -377,13 +422,21 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    max-height: 50vh;
+    /* 限制最大高度为视口高度的50% */
+    overflow-y: auto;
+    /* 添加垂直滚动条 */
+    padding-right: 8px;
+    /* 为滚动条留出空间 */
 }
 
 .download-link {
     display: block;
     padding: 10px;
-    background: #E8F0FE; /* Light blue tint */
-    color: #1967D2; /* Google Blue Link */
+    background: #E8F0FE;
+    /* Light blue tint */
+    color: #1967D2;
+    /* Google Blue Link */
     text-decoration: none;
     border-radius: 4px;
     font-size: 14px;
@@ -400,4 +453,35 @@ body {
     text-align: right;
     border-top: 1px solid var(--border-color);
     background: #F8F9FA;
+}
+
+/* 自定义滚动条样式 */
+.download-list::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.download-list::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track {
+    background: #F1F3F4;
+    border-radius: 4px;
+}
+
+.download-list::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb {
+    background: #DADCE0;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.download-list::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #BDC1C6;
+}
+
+/* Firefox 滚动条样式 */
+.download-list,
+.modal-body {
+    scrollbar-width: thin;
+    scrollbar-color: #DADCE0 #F1F3F4;
 }

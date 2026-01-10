@@ -12,6 +12,7 @@ from converters.word_converter import extract_from_docx
 from converters.doc_converter import convert_doc_to_docx
 from converters.word_to_md_converter import extract_from_docx as word_to_md_extract
 from converters.docx_merger_converter import process_merge_docx
+from converters.pdf_to_docx_converter import convert_pdf_to_docx
 
 app = Flask(__name__, static_folder='web', static_url_path='')
 
@@ -91,6 +92,8 @@ def convert_file(convert_type):
                         generated_paths = process_excel_file(file_path)
                     elif convert_type == 'pdf':
                         generated_paths = process_pdf_full(file_path)
+                    elif convert_type == 'pdf2docx':
+                        generated_paths = convert_pdf_to_docx(file_path)
                     elif convert_type == 'word':
                         generated_paths = extract_from_docx(file_path)
                     elif convert_type == 'doc2docx':

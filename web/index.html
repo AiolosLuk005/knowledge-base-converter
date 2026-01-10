@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <header class="app-header">
         <div class="header-content">
@@ -51,19 +53,21 @@
                 </div>
             </div>
 
-            <!-- Word Tool -->
-            <div class="tool-card" data-type="word" onclick="selectTool('word')">
-                <div class="card-icon word-icon">
+            <!-- PDF to DOCX Tool -->
+            <div class="tool-card" data-type="pdf2docx" onclick="selectTool('pdf2docx')">
+                <div class="card-icon pdf-icon">
                     <span class="material-icons-outlined">description</span>
                 </div>
                 <div class="card-content">
-                    <h3>Word 转换</h3>
-                    <p>提取 Word 文档中的文本和表格为 Markdown 和 CSV。</p>
+                    <h3>PDF 转 DOCX</h3>
+                    <p>将 PDF 转换为可编辑的 DOCX 格式，保留图片和表格。</p>
                 </div>
                 <div class="card-action">
                     <span class="material-icons-outlined">arrow_forward</span>
                 </div>
             </div>
+
+
 
             <!-- Doc to Docx Tool -->
             <div class="tool-card" data-type="doc2docx" onclick="selectTool('doc2docx')">
@@ -116,7 +120,7 @@
                 </button>
                 <h3 id="current-tool-title">上传文件</h3>
             </div>
-            
+
             <div class="upload-area" id="drop-zone">
                 <span class="material-icons-outlined upload-icon">cloud_upload</span>
                 <p>拖放文件到此处</p>
@@ -132,7 +136,7 @@
                 <button id="convert-btn" class="primary-btn" disabled onclick="startConversion()">开始转换</button>
             </div>
         </section>
-        
+
         <!-- Result Modal -->
         <div id="result-modal" class="modal hidden">
             <div class="modal-content">
@@ -158,4 +162,5 @@
     </main>
     <script src="app.js"></script>
 </body>
+
 </html>

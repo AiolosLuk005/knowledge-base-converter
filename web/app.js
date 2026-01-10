@@ -18,7 +18,7 @@ function selectTool(type) {
     const titles = {
         'excel': 'Excel 转换',
         'pdf': 'PDF 转换',
-        'word': 'Word 转换',
+        'pdf2docx': 'PDF 转 DOCX',
         'doc2docx': 'Doc 转 Docx',
         'word-to-md': 'Word 转 Markdown',
         'merge-docx': '多文档合并'
@@ -31,7 +31,7 @@ function selectTool(type) {
     let accept = '';
     if (type === 'excel') accept = '.xlsx, .xlsm';
     else if (type === 'pdf') accept = '.pdf';
-    else if (type === 'word') accept = '.docx';
+    else if (type === 'pdf2docx') accept = '.pdf';
     else if (type === 'doc2docx') accept = '.doc';
     else if (type === 'word-to-md') accept = '.docx';
     else if (type === 'merge-docx') accept = '.docx';
@@ -83,7 +83,7 @@ function handleFiles(files) {
     const validExtensions = {
         'excel': ['.xlsx', '.xlsm'],
         'pdf': ['.pdf'],
-        'word': ['.docx'],
+        'pdf2docx': ['.pdf'],
         'doc2docx': ['.doc'],
         'word-to-md': ['.docx'],
         'merge-docx': ['.docx']
