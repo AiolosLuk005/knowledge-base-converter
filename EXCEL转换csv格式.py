@@ -67,45 +67,74 @@ def unmerge_and_fill_preserve_format(sheet):
     return formatted_data
 
 def process_excel_file(file_path):
-    wb = load_workbook(file_path, data_only=True)
+    ext = os.path.splitext(file_path)[1].lower()
     base_name = os.path.splitext(os.path.basename(file_path))[0]
     output_dir = os.path.dirname(file_path)
     exported_files = []
     md_lines = []
 
-    for i, sheetname in enumerate(wb.sheetnames):
-        sheet = wb[sheetname]
-        formatted_data = unmerge_and_fill_preserve_format(sheet)
-        df = pd.DataFrame(formatted_data)
-        output_file = os.path.join(output_dir, f"{base_name}_Sheet{i+1}.csv")
-        df.to_csv(output_file, index=False, header=False, encoding='utf-8-sig')
-        exported_files.append(output_file)
+    if ext in [".xlsx", ".xlsm"]:
+        wb = load_workbook(file_path, data_only=True)
+        for i, sheetname in enumerate(wb.sheetnames):
+            sheet = wb[sheetname]
+            formatted_data = unmerge_and_fill_preserve_format(sheet)
+            
+            # 保存 CSV
+            df = pd.DataFrame(formatted_data)
+            output_file = os.path.join(output_dir, f"{base_name}_Sheet{i+1}.csv")
+            df.to_csv(output_file, index=False, header=False, encoding='utf-8-sig')
+            exported_files.append(output_file)
 
-        safe_sheetname = "".join(c if c not in r'\\/:"*?<>|' else "_" for c in sheetname)
-        if formatted_data:
-            raw_headers = [str(h) for h in formatted_data[0]]
-            headers = normalize_headers(raw_headers)
-            json_df = pd.DataFrame(formatted_data[1:], columns=headers)
-        else:
-            headers = []
-            json_df = pd.DataFrame()
-        json_file = os.path.join(output_dir, f"{base_name}_{safe_sheetname}.json")
-        json_df.to_json(json_file, orient="records", force_ascii=False)
-        exported_files.append(json_file)
+            # 保存 JSON
+            safe_sheetname = "".join(c if c not in r'\\/:"*?<>|' else "_" for c in sheetname)
+            if formatted_data:
+                raw_headers = [str(h) for h in formatted_data[0]]
+                headers = normalize_headers(raw_headers)
+                json_df = pd.DataFrame(formatted_data[1:], columns=headers)
+            else:
+                headers = []
+                json_df = pd.DataFrame()
+            json_file = os.path.join(output_dir, f"{base_name}_{safe_sheetname}.json")
+            json_df.to_json(json_file, orient="records", force_ascii=False)
+            exported_files.append(json_file)
 
-        md_lines.append(f"### Sheet{i+1}: {sheetname}")
-        if formatted_data:
-            md_lines.append("| " + " | ".join(headers) + " |")
-            md_lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
-            for row in formatted_data[1:]:
-                md_lines.append("| " + " | ".join(str(cell) for cell in row) + " |")
-        md_lines.append("")
+            # 准备 Markdown 行
+            md_lines.append(f"### Sheet{i+1}: {sheetname}")
+            if formatted_data:
+                md_lines.append("| " + " | ".join(headers) + " |")
+                md_lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
+                for row in formatted_data[1:]:
+                    md_lines.append("| " + " | ".join(str(cell) for cell in row) + " |")
+            md_lines.append("")
+    elif ext == ".xls":
+        # .xls 不支持 unmerge_and_fill_preserve_format，直接用 pandas 读取
+        try:
+            dict_df = pd.read_excel(file_path, sheet_name=None)
+            for i, (sheetname, df) in enumerate(dict_df.items()):
+                output_file = os.path.join(output_dir, f"{base_name}_Sheet{i+1}.csv")
+                df.to_csv(output_file, index=False, encoding='utf-8-sig')
+                exported_files.append(output_file)
+
+                safe_sheetname = "".join(c if c not in r'\\/:"*?<>|' else "_" for c in sheetname)
+                json_file = os.path.join(output_dir, f"{base_name}_{safe_sheetname}.json")
+                df.to_json(json_file, orient="records", force_ascii=False)
+                exported_files.append(json_file)
+
+                md_lines.append(f"### Sheet{i+1}: {sheetname}")
+                md_lines.append(df.head(10).to_markdown(index=False)) # .xls 只显示前10行预览
+                md_lines.append("\n*(注: .xls 文件不支持自动填充合并单元格)*\n")
+        except Exception as e:
+            messagebox.showerror("读取失败", f"无法读取 .xls 文件: {str(e)}\n请尝试另存为 .xlsx 后再试。")
+            return []
+    else:
+        return []
 
     # 写入markdown文件
-    md_file = os.path.join(output_dir, f"{base_name}.md")
-    with open(md_file, "w", encoding="utf-8") as f:
-        f.write("\n".join(md_lines))
-    exported_files.append(md_file)
+    if md_lines:
+        md_file = os.path.join(output_dir, f"{base_name}.md")
+        with open(md_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(md_lines))
+        exported_files.append(md_file)
 
     return exported_files
 
@@ -120,11 +149,16 @@ def choose_file_or_folder():
         folder = filedialog.askdirectory(title="请选择文件夹")
         if folder:
             for file in os.listdir(folder):
-                if file.endswith(".xlsx") or file.endswith(".xlsm"):
+                # 转换为小写后再检查后缀，确保大小写不敏感
+                if file.lower().endswith((".xlsx", ".xlsm", ".xls")):
                     file_path = os.path.join(folder, file)
                     exported_files += process_excel_file(file_path)
     else:
-        file_path = filedialog.askopenfilename(title="请选择Excel文件", filetypes=[("Excel files", "*.xlsx *.xlsm")])
+        # 更新文件类型过滤器
+        file_path = filedialog.askopenfilename(
+            title="请选择Excel文件", 
+            filetypes=[("Excel files", "*.xlsx *.xlsm *.xls"), ("All files", "*.*")]
+        )
         if file_path:
             exported_files += process_excel_file(file_path)
 
