@@ -1,8 +1,16 @@
 import os
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
 from pdf2docx import Converter
+
+# Force UTF-8 encoding for stdout and stderr to prevent UnicodeEncodeError on Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 
 
 def select_path():
