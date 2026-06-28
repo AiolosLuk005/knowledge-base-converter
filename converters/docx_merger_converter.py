@@ -4,6 +4,7 @@ DOCX文档合并转换器模块
 """
 import os
 import zipfile
+from copy import deepcopy
 from docx import Document
 
 
@@ -26,8 +27,8 @@ def is_valid_docx(file_path):
 
 
 def copy_element(element):
-    """深拷贝一个XML元素"""
-    return element._element
+    """深拷贝一个XML元素，避免直接引用导致原文档结构被破坏"""
+    return deepcopy(element._element)
 
 
 def merge_docx_files(file_list, output_path):

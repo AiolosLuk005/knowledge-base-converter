@@ -67,7 +67,7 @@ def convert_file(convert_type):
                 generated_paths = process_merge_docx(file_paths)
                 for path in generated_paths:
                     rel_path = os.path.relpath(path, app.config['UPLOAD_FOLDER'])
-                    rel_path = rel_path.replace('\\\\', '/')
+                    rel_path = rel_path.replace('\\', '/')
                     result_files.append({
                         'name': os.path.basename(path),
                         'url': f'/download/{rel_path}'
@@ -109,7 +109,7 @@ def convert_file(convert_type):
                 for path in generated_paths:
                     rel_path = os.path.relpath(path, app.config['UPLOAD_FOLDER'])
                     # Windows path separators fix for URL
-                    rel_path = rel_path.replace('\\\\', '/')
+                    rel_path = rel_path.replace('\\', '/')
                     result_files.append({
                         'name': os.path.basename(path),
                         'url': f'/download/{rel_path}'

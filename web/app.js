@@ -29,7 +29,7 @@ function selectTool(type) {
 
     // Accept types
     let accept = '';
-    if (type === 'excel') accept = '.xlsx, .xlsm';
+    if (type === 'excel') accept = '.xlsx, .xlsm, .xls';
     else if (type === 'pdf') accept = '.pdf';
     else if (type === 'pdf2docx') accept = '.pdf';
     else if (type === 'doc2docx') accept = '.doc';
@@ -81,7 +81,7 @@ function handleFiles(files) {
     if (!currentTool) return;
 
     const validExtensions = {
-        'excel': ['.xlsx', '.xlsm'],
+        'excel': ['.xlsx', '.xlsm', '.xls'],
         'pdf': ['.pdf'],
         'pdf2docx': ['.pdf'],
         'doc2docx': ['.doc'],
