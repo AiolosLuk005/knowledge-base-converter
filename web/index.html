@@ -110,6 +110,138 @@
                     <span class="material-icons-outlined">arrow_forward</span>
                 </div>
             </div>
+
+            <!-- 档案处理工具区域 -->
+            <div class="section-title">
+                <span class="material-icons-outlined">folder_special</span>
+                <span>档案与 PDF 专业工具箱</span>
+            </div>
+
+            <!-- PDF Merge Tool -->
+            <div class="tool-card" data-type="pdf-merge" onclick="selectTool('pdf-merge')">
+                <div class="card-icon archive-icon">
+                    <span class="material-icons-outlined">call_merge</span>
+                </div>
+                <div class="card-content">
+                    <h3>PDF 文档合并</h3>
+                    <p>将多个 PDF 文件按顺序无缝合并为一个完整的 PDF 文档。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- PDF Compress Tool -->
+            <div class="tool-card" data-type="pdf-compress" onclick="selectTool('pdf-compress')">
+                <div class="card-icon compress-icon">
+                    <span class="material-icons-outlined">compress</span>
+                </div>
+                <div class="card-content">
+                    <h3>PDF 文件压缩</h3>
+                    <p>优化并压缩 PDF 中的图片资源与数据流，显著减小文件体积。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- PDF To Images Tool -->
+            <div class="tool-card" data-type="pdf-to-images" onclick="selectTool('pdf-to-images')">
+                <div class="card-icon image-icon">
+                    <span class="material-icons-outlined">photo_library</span>
+                </div>
+                <div class="card-content">
+                    <h3>PDF 转图片</h3>
+                    <p>将 PDF 每一页导出为高清晰度 PNG 图片，并自动打包为 ZIP。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- Images To PDF Tool -->
+            <div class="tool-card" data-type="images-to-pdf" onclick="selectTool('images-to-pdf')">
+                <div class="card-icon image-icon">
+                    <span class="material-icons-outlined">collections_bookmark</span>
+                </div>
+                <div class="card-content">
+                    <h3>图片合成 PDF</h3>
+                    <p>批量将 PNG、JPG、JPEG 等图片按序合成单一 PDF 文档。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- PDF Split by Size Tool -->
+            <div class="tool-card" data-type="pdf-split-size" onclick="selectTool('pdf-split-size')">
+                <div class="card-icon split-icon">
+                    <span class="material-icons-outlined">vertical_split</span>
+                </div>
+                <div class="card-content">
+                    <h3>按大小拆分 PDF</h3>
+                    <p>根据设定文件上限（如 10MB）将大文件智能拆分成多个子文档。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- PDF Split by Parts Tool -->
+            <div class="tool-card" data-type="pdf-split-parts" onclick="selectTool('pdf-split-parts')">
+                <div class="card-icon split-icon">
+                    <span class="material-icons-outlined">call_split</span>
+                </div>
+                <div class="card-content">
+                    <h3>按份数拆分 PDF</h3>
+                    <p>将 PDF 文档按指定份数均等拆分（如均分为 3 份）。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- PDF Split by Pages Tool -->
+            <div class="tool-card" data-type="pdf-split-pages" onclick="selectTool('pdf-split-pages')">
+                <div class="card-icon split-icon">
+                    <span class="material-icons-outlined">content_cut</span>
+                </div>
+                <div class="card-content">
+                    <h3>指定页码提取/删除</h3>
+                    <p>根据输入的页码（如 1-3, 5）提取专属页面或裁剪删除废页。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- PDF Replace Pages Tool -->
+            <div class="tool-card" data-type="pdf-replace-pages" onclick="selectTool('pdf-replace-pages')">
+                <div class="card-icon replace-icon">
+                    <span class="material-icons-outlined">find_replace</span>
+                </div>
+                <div class="card-content">
+                    <h3>PDF 指定页替换</h3>
+                    <p>用 WebP/JPG 等图片替换 PDF 中的出错页，自动匹配原页面尺寸。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
+
+            <!-- PDF Search & Highlight Tool -->
+            <div class="tool-card" data-type="pdf-highlight" onclick="selectTool('pdf-highlight')">
+                <div class="card-icon search-icon">
+                    <span class="material-icons-outlined">highlight</span>
+                </div>
+                <div class="card-content">
+                    <h3>PDF 关键词高亮</h3>
+                    <p>在 PDF 中检索特定关键词，并在全文中自动添加醒目高亮标注。</p>
+                </div>
+                <div class="card-action">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </div>
+            </div>
         </div>
 
         <!-- Upload Section (Initially Hidden) -->
@@ -121,12 +253,25 @@
                 <h3 id="current-tool-title">上传文件</h3>
             </div>
 
+            <!-- 动态参数配置区域 -->
+            <div id="tool-options-container" class="tool-options-panel hidden">
+                <!-- 由 app.js 动态渲染 -->
+            </div>
+
             <div class="upload-area" id="drop-zone">
                 <span class="material-icons-outlined upload-icon">cloud_upload</span>
-                <p>拖放文件到此处</p>
-                <p class="upload-subtext">或者点击选择文件</p>
+                <p>点击或拖放文件到此处</p>
+                <p class="upload-subtext">优先推荐点击下方“选择本地文件”，新文件将<b>直接保存到原文件同一目录</b></p>
+                <div class="picker-buttons" style="margin-top: 14px;">
+                    <button type="button" class="native-picker-btn" onclick="openNativeFilePicker(event)">
+                        <span class="material-icons-outlined">folder_open</span>
+                        选择电脑本地文件 (自动原地保存)
+                    </button>
+                </div>
                 <input type="file" id="file-input" hidden multiple>
             </div>
+            <input type="file" id="replace-pdf-input" hidden accept=".pdf">
+            <input type="file" id="replace-img-input" hidden multiple accept=".webp,.jpg,.jpeg,.png,.bmp,.tif,.tiff">
 
             <div class="file-list" id="file-list">
                 <!-- File items will act here -->
@@ -161,6 +306,7 @@
 
     </main>
     <script src="app.js"></script>
+    <script src="replace_pages.js"></script>
 </body>
 
 </html>

@@ -12,7 +12,7 @@ import fitz  # PyMuPDF
 
 # Initialize OCR once to avoid reloading model
 try:
-    ocr = PaddleOCR(use_angle_cls=True, lang='ch', show_log=False)
+    ocr = PaddleOCR(use_angle_cls=True, lang='ch')
 except Exception as e:
     print(f"Warning: Failed to initialize PaddleOCR. OCR functions will fail. {e}")
     ocr = None
@@ -106,11 +106,15 @@ def process_pdf_full(pdf_path):
 
     try:
         doc = fitz.open(pdf_path)
-        # Note: poppler_path might need to be configured if not in PATH
-        images = convert_from_path(pdf_path, dpi=300)
+        # Use PyMuPDF directly to render images in-memory (no Poppler required)
+        images = []
+        for p in doc:
+            pix = p.get_pixmap(dpi=300)
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            images.append(img)
         plumber_pdf = pdfplumber.open(pdf_path)
     except Exception as e:
-        raise Exception(f"Failed to open PDF or convert to images: {e}")
+        raise Exception(f"Failed to open PDF or render images: {e}")
 
     prev_df = None
 
@@ -170,6 +174,15 @@ def process_pdf_full(pdf_path):
         for row in prev_df.itertuples(index=False):
             joined = " | ".join(str(c) for c in row)
             results_csv.append({"Page": "Last", "Sentence": joined})
+
+    try:
+        doc.close()
+    except Exception:
+        pass
+    try:
+        plumber_pdf.close()
+    except Exception:
+        pass
 
     csv_path = os.path.join(base_dir, f"{filename}.csv")
     md_path = os.path.join(base_dir, f"{filename}.md")
